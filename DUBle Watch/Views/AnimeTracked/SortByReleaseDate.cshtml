@@ -1,0 +1,59 @@
+﻿@model IEnumerable<DUBle_Watch.Models.AnimeTracked>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div>
+    <a asp-action="SortByGenre" asp-controller="AnimeTracked">Genre</a> |
+    <a asp-action="SortByEpisodesLeft" asp-controller="AnimeTracked">Episodes Left</a> |
+    <a asp-action="SortByFinished" asp-controller="AnimeTracked">Finished</a> |
+    <a asp-action="SortByReleaseDate" asp-controller="AnimeTracked">Release date</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Anime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimesCompleted)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.CurrentEpisode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Anime.CurrentLastEpisode)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Anime.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimesCompleted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentEpisode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.AnimeTrackedId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.AnimeTrackedId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

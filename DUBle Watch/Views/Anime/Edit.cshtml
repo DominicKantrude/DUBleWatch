@@ -19,6 +19,11 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ImagePath" class="control-label"></label>
+                <input asp-for="ImagePath" class="form-control" />
+                <span asp-validation-for="ImagePath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="CurrentLastEpisode" class="control-label"></label>
                 <input asp-for="CurrentLastEpisode" class="form-control" />
                 <span asp-validation-for="CurrentLastEpisode" class="text-danger"></span>
@@ -38,9 +43,14 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="AnimeReleaseDate" class="control-label"></label>
+                <input asp-for="AnimeReleaseDate" class="form-control" />
+                <span asp-validation-for="AnimeReleaseDate" class="text-danger"></span>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="hasEnded" /> @Html.DisplayNameFor(model => model.hasEnded)
+                    <input class="form-check-input" asp-for="hasAnimeEnded" /> @Html.DisplayNameFor(model => model.hasAnimeEnded)
                 </label>
             </div>
             <div class="form-group">

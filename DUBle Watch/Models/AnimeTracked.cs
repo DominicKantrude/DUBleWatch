@@ -15,17 +15,20 @@ namespace DUBle_Watch.Models
         public int AnimeId { get; set; }
 
         public Anime Anime { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
-        ApplicationUser CurrentUser { get; set; }
+        public ApplicationUser CurrentUser { get; set; }
 
-        public int CompletedCount { get; set; }
+        public int TimesCompleted { get; set; }
 
-        public bool CurrentlyCompleted { get; set; }
+        public bool IsInCurrentlyCompletedSection { get; set; }
 
         public int CurrentEpisode { get; set; }
 
-       
+        public DateTime LastTimeEpisodeUpdated{ get; set; }
+
+
+
 
 
 

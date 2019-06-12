@@ -20,8 +20,13 @@ namespace DUBle_Watch.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Anime>()
+                .Property(b => b.DateCreated)
+                .HasDefaultValueSql("GETDATE()");
+
+            
             // Create a new user for Identity Framework
             ApplicationUser user = new ApplicationUser
             {
@@ -49,7 +54,7 @@ namespace DUBle_Watch.Data
                     GenreId = 2,
                     AnimeLink = "https://www.crunchyroll.com/black-clover",
                     Description = "anime about a dude who has no wizard powers but gets strong",
-                    hasEnded = false
+                    hasAnimeEnded = false
                 },
                new Anime()
                {
@@ -59,7 +64,7 @@ namespace DUBle_Watch.Data
                    GenreId = 1,
                    AnimeLink = "https://www.crunchyroll.com/naruto",
   Description = "anime about a dude who has no wizard powers but gets strong",
-                   hasEnded = false
+                   hasAnimeEnded = false
                }
             );
 
@@ -70,11 +75,9 @@ namespace DUBle_Watch.Data
 
                     AnimeId = 1,
 
-                    UserId = 1,
+                    TimesCompleted = 0,
 
-                    CompletedCount = 0,
-
-                    CurrentlyCompleted = false,
+                    IsInCurrentlyCompletedSection = false,
 
                     CurrentEpisode = 10
 
@@ -85,9 +88,7 @@ namespace DUBle_Watch.Data
 
                     AnimeId = 2,
 
-                    UserId = 1,
-
-                    CompletedCount = 0,
+                    IsInCurrentlyCompletedSection = false,
 
                     CurrentEpisode = 10
                 }
@@ -105,7 +106,6 @@ namespace DUBle_Watch.Data
                 new Genre()
                 {
                     GenreId = 2,
-
                     Name = "Action"
                 }
             );

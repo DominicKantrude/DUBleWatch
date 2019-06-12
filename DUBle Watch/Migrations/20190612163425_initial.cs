@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DUBle_Watch.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -175,11 +175,14 @@ namespace DUBle_Watch.Migrations
                     AnimeId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false),
+                    ImagePath = table.Column<string>(nullable: true),
                     CurrentLastEpisode = table.Column<int>(nullable: false),
                     GenreId = table.Column<int>(nullable: true),
                     AnimeLink = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    hasEnded = table.Column<bool>(nullable: false)
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    AnimeReleaseDate = table.Column<DateTime>(nullable: true),
+                    hasAnimeEnded = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,11 +202,12 @@ namespace DUBle_Watch.Migrations
                     AnimeTrackedId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AnimeId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    CompletedCount = table.Column<int>(nullable: false),
-                    CurrentlyCompleted = table.Column<bool>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    CurrentUserId = table.Column<string>(nullable: true),
+                    TimesCompleted = table.Column<int>(nullable: false),
+                    IsInCurrentlyCompletedSection = table.Column<bool>(nullable: false),
                     CurrentEpisode = table.Column<int>(nullable: false),
-                    ApplicationUserId = table.Column<string>(nullable: true)
+                    LastTimeEpisodeUpdated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -215,8 +219,8 @@ namespace DUBle_Watch.Migrations
                         principalColumn: "AnimeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AnimeTracked_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_AnimeTracked_AspNetUsers_CurrentUserId",
+                        column: x => x.CurrentUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -225,7 +229,7 @@ namespace DUBle_Watch.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "35987395-b484-4347-b532-c0bf26bd8adb", 0, "a5b19400-6655-4127-962e-f2ce0d9250b1", "admin@admin.com", true, "admin", "admin", false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEKQZeWK5v1wPa2rIodJRnOIC9/JpaRciZuy0zm6eNDkmWiCDCYWEp/vad/hY6vOc9w==", null, false, "4bc0c9e8-cdcc-4caf-9813-a4f2eec43800", false, "admin@admin.com" });
+                values: new object[] { "59f4f9f5-b851-4534-9127-5353b98fb494", 0, "776f9f4b-13bb-49f3-83af-c861dca0955b", "admin@admin.com", true, "admin", "admin", false, null, "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEE+BHKK0e2/mnpdYhQ/DZnRPETzBsKjRTKUtTNzzqwFdoLW5SUibB0ureATnA66Zng==", null, false, "cd4c3add-f04a-4061-87a2-7ca820367764", false, "admin@admin.com" });
 
             migrationBuilder.InsertData(
                 table: "Genre",
@@ -239,23 +243,23 @@ namespace DUBle_Watch.Migrations
 
             migrationBuilder.InsertData(
                 table: "Anime",
-                columns: new[] { "AnimeId", "AnimeLink", "CurrentLastEpisode", "Description", "GenreId", "Name", "hasEnded" },
-                values: new object[] { 2, "https://www.crunchyroll.com/naruto", 1088, "anime about a dude who has no wizard powers but gets strong", 1, "Naruto", false });
+                columns: new[] { "AnimeId", "AnimeLink", "AnimeReleaseDate", "CurrentLastEpisode", "Description", "GenreId", "ImagePath", "Name", "hasAnimeEnded" },
+                values: new object[] { 2, "https://www.crunchyroll.com/naruto", null, 1088, "anime about a dude who has no wizard powers but gets strong", 1, null, "Naruto", false });
 
             migrationBuilder.InsertData(
                 table: "Anime",
-                columns: new[] { "AnimeId", "AnimeLink", "CurrentLastEpisode", "Description", "GenreId", "Name", "hasEnded" },
-                values: new object[] { 1, "https://www.crunchyroll.com/black-clover", 88, "anime about a dude who has no wizard powers but gets strong", 2, "Black Clover", false });
+                columns: new[] { "AnimeId", "AnimeLink", "AnimeReleaseDate", "CurrentLastEpisode", "Description", "GenreId", "ImagePath", "Name", "hasAnimeEnded" },
+                values: new object[] { 1, "https://www.crunchyroll.com/black-clover", null, 88, "anime about a dude who has no wizard powers but gets strong", 2, null, "Black Clover", false });
 
             migrationBuilder.InsertData(
                 table: "AnimeTracked",
-                columns: new[] { "AnimeTrackedId", "AnimeId", "ApplicationUserId", "CompletedCount", "CurrentEpisode", "CurrentlyCompleted", "UserId" },
-                values: new object[] { 2, 2, null, 0, 10, false, 1 });
+                columns: new[] { "AnimeTrackedId", "AnimeId", "CurrentEpisode", "CurrentUserId", "IsInCurrentlyCompletedSection", "LastTimeEpisodeUpdated", "TimesCompleted", "UserId" },
+                values: new object[] { 2, 2, 10, null, false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null });
 
             migrationBuilder.InsertData(
                 table: "AnimeTracked",
-                columns: new[] { "AnimeTrackedId", "AnimeId", "ApplicationUserId", "CompletedCount", "CurrentEpisode", "CurrentlyCompleted", "UserId" },
-                values: new object[] { 1, 1, null, 0, 10, false, 1 });
+                columns: new[] { "AnimeTrackedId", "AnimeId", "CurrentEpisode", "CurrentUserId", "IsInCurrentlyCompletedSection", "LastTimeEpisodeUpdated", "TimesCompleted", "UserId" },
+                values: new object[] { 1, 1, 10, null, false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Anime_GenreId",
@@ -268,9 +272,9 @@ namespace DUBle_Watch.Migrations
                 column: "AnimeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnimeTracked_ApplicationUserId",
+                name: "IX_AnimeTracked_CurrentUserId",
                 table: "AnimeTracked",
-                column: "ApplicationUserId");
+                column: "CurrentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

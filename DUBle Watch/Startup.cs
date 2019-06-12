@@ -71,7 +71,7 @@ namespace DUBle_Watch
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=AnimeTracked}/{action=Index}/{id?}");
             });
         }
     }

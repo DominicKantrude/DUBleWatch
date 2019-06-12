@@ -28,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.hasEnded)
+                @Html.DisplayNameFor(model => model.hasAnimeEnded)
             </th>
             <th></th>
         </tr>
@@ -52,9 +52,10 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.hasEnded)
+                @Html.DisplayFor(modelItem => item.hasAnimeEnded)
             </td>
             <td>
+                <a asp-action="AddToTracked" asp-route-id="@item.AnimeId">AddToTracked</a>
                 <a asp-action="Edit" asp-route-id="@item.AnimeId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.AnimeId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.AnimeId">Delete</a>

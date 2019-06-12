@@ -7,23 +7,47 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DUBle_Watch.Data;
 using DUBle_Watch.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace DUBle_Watch.Controllers
 {
     public class AnimeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AnimeController(ApplicationDbContext context)
+        public AnimeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Anime
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Anime.Include(a => a.Genre);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        
+
+        public async Task<IActionResult> AddToTracked(int id)
+        {
+            var user = await GetCurrentUserAsync();
+
+            AnimeTracked animeTracked = new AnimeTracked()
+            {
+                AnimeId = id,
+                UserId = user.Id,
+                TimesCompleted = 0,
+                IsInCurrentlyCompletedSection = false,
+                CurrentEpisode = 0
+            };
+
+            var applicationDbContext = _context.AnimeTracked.Add(animeTracked);
+            _context.SaveChanges();
+           return RedirectToAction("Index", "Anime");
         }
 
         // GET: Anime/Details/5
@@ -48,7 +72,7 @@ namespace DUBle_Watch.Controllers
         // GET: Anime/Create
         public IActionResult Create()
         {
-            ViewData["GenreId"] = new SelectList(_context.Genre, "GenreId", "GenreId");
+            ViewData["GenreId"] = new SelectList(_context.Genre, "GenreId", "Name");
             return View();
         }
 
@@ -57,7 +81,7 @@ namespace DUBle_Watch.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AnimeId,Name,CurrentLastEpisode,GenreId,AnimeLink,Description,hasEnded")] Anime anime)
+        public async Task<IActionResult> Create([Bind("AnimeId,Name,CurrentLastEpisode,GenreId,AnimeLink,Description,AnimeReleaseDate,hasAnimeEnded")] Anime anime)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +115,7 @@ namespace DUBle_Watch.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AnimeId,Name,CurrentLastEpisode,GenreId,AnimeLink,Description,hasEnded")] Anime anime)
+        public async Task<IActionResult> Edit(int id, [Bind("AnimeId,Name,CurrentLastEpisode,GenreId,AnimeLink,Description,AnimeReleaseDate, hasAnimeEnded")] Anime anime)
         {
             if (id != anime.AnimeId)
             {

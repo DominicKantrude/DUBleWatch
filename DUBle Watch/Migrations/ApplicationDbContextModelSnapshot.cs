@@ -27,16 +27,24 @@ namespace DUBle_Watch.Migrations
 
                     b.Property<string>("AnimeLink");
 
+                    b.Property<DateTime?>("AnimeReleaseDate");
+
                     b.Property<int>("CurrentLastEpisode");
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Description");
 
                     b.Property<int?>("GenreId");
 
+                    b.Property<string>("ImagePath");
+
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<bool>("hasEnded");
+                    b.Property<bool>("hasAnimeEnded");
 
                     b.HasKey("AnimeId");
 
@@ -50,20 +58,22 @@ namespace DUBle_Watch.Migrations
                             AnimeId = 1,
                             AnimeLink = "https://www.crunchyroll.com/black-clover",
                             CurrentLastEpisode = 88,
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "anime about a dude who has no wizard powers but gets strong",
                             GenreId = 2,
                             Name = "Black Clover",
-                            hasEnded = false
+                            hasAnimeEnded = false
                         },
                         new
                         {
                             AnimeId = 2,
                             AnimeLink = "https://www.crunchyroll.com/naruto",
                             CurrentLastEpisode = 1088,
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "anime about a dude who has no wizard powers but gets strong",
                             GenreId = 1,
                             Name = "Naruto",
-                            hasEnded = false
+                            hasAnimeEnded = false
                         });
                 });
 
@@ -75,21 +85,23 @@ namespace DUBle_Watch.Migrations
 
                     b.Property<int>("AnimeId");
 
-                    b.Property<string>("ApplicationUserId");
-
-                    b.Property<int>("CompletedCount");
-
                     b.Property<int>("CurrentEpisode");
 
-                    b.Property<bool>("CurrentlyCompleted");
+                    b.Property<string>("CurrentUserId");
 
-                    b.Property<int>("UserId");
+                    b.Property<bool>("IsInCurrentlyCompletedSection");
+
+                    b.Property<DateTime>("LastTimeEpisodeUpdated");
+
+                    b.Property<int>("TimesCompleted");
+
+                    b.Property<string>("UserId");
 
                     b.HasKey("AnimeTrackedId");
 
                     b.HasIndex("AnimeId");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("CurrentUserId");
 
                     b.ToTable("AnimeTracked");
 
@@ -98,19 +110,19 @@ namespace DUBle_Watch.Migrations
                         {
                             AnimeTrackedId = 1,
                             AnimeId = 1,
-                            CompletedCount = 0,
                             CurrentEpisode = 10,
-                            CurrentlyCompleted = false,
-                            UserId = 1
+                            IsInCurrentlyCompletedSection = false,
+                            LastTimeEpisodeUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TimesCompleted = 0
                         },
                         new
                         {
                             AnimeTrackedId = 2,
                             AnimeId = 2,
-                            CompletedCount = 0,
                             CurrentEpisode = 10,
-                            CurrentlyCompleted = false,
-                            UserId = 1
+                            IsInCurrentlyCompletedSection = false,
+                            LastTimeEpisodeUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TimesCompleted = 0
                         });
                 });
 
@@ -173,9 +185,9 @@ namespace DUBle_Watch.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "35987395-b484-4347-b532-c0bf26bd8adb",
+                            Id = "59f4f9f5-b851-4534-9127-5353b98fb494",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a5b19400-6655-4127-962e-f2ce0d9250b1",
+                            ConcurrencyStamp = "776f9f4b-13bb-49f3-83af-c861dca0955b",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             FirstName = "admin",
@@ -183,9 +195,9 @@ namespace DUBle_Watch.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKQZeWK5v1wPa2rIodJRnOIC9/JpaRciZuy0zm6eNDkmWiCDCYWEp/vad/hY6vOc9w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEE+BHKK0e2/mnpdYhQ/DZnRPETzBsKjRTKUtTNzzqwFdoLW5SUibB0ureATnA66Zng==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4bc0c9e8-cdcc-4caf-9813-a4f2eec43800",
+                            SecurityStamp = "cd4c3add-f04a-4061-87a2-7ca820367764",
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         });
@@ -344,9 +356,9 @@ namespace DUBle_Watch.Migrations
                         .HasForeignKey("AnimeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("DUBle_Watch.Models.ApplicationUser")
+                    b.HasOne("DUBle_Watch.Models.ApplicationUser", "CurrentUser")
                         .WithMany("AnimeTracked")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("CurrentUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

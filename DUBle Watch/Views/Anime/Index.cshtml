@@ -4,63 +4,54 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CurrentLastEpisode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AnimeLink)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.hasAnimeEnded)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrentLastEpisode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AnimeLink)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.hasAnimeEnded)
-            </td>
-            <td>
-                <a asp-action="AddToTracked" asp-route-id="@item.AnimeId">AddToTracked</a>
-                <a asp-action="Edit" asp-route-id="@item.AnimeId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AnimeId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AnimeId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<section class="border backgroud-silver">
+    <div class="flex-coontainer-space-between anime-top-container justify-content-between">
+        <div>
+            <a asp-action="SortByGenre" asp-controller="Anime" class="padding-sides-20">Genre</a> |
+            <a asp-action="SortByRating" asp-controller="Anime" class="padding-sides-20">Rating</a> |
+            <a asp-action="SortByNewest" asp-controller="Anime" class="padding-sides-20">Newest</a>
+        </div>
+        <div class="flex-end">
+            @using (Html.BeginForm("SearchByCity", "Products", FormMethod.Get))
+            {
+                @Html.TextBox("Search")
+
+                <input type="submit" value="Search" />
+
+            }
+            </div>
+        </div>
+   
+    <section class="flex-container">
+        @foreach (var item in Model)
+        {
+            <a asp-action="Details" asp-route-id="@item.AnimeId">
+                <div class="flex-column card">
+                    <div>
+                        <img src="/images/@item.ImagePath" class="animetDetailImage">
+                    </div>
+
+                    <div class="anime-title">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </div>
+                    <div class="anime-card-text">
+                        @Html.DisplayFor(modelItem => item.Genre.Name)
+                    </div>
+                    <div class="anime-card-text">
+                        Episodes:
+                        @Html.DisplayFor(modelItem => item.CurrentLastEpisode)
+                        <div class="plus-sign">
+                            <form asp-action="AddToTracked" asp-route-id="@item.AnimeId"><button type="submit" class="btn"><i class="fas fa-plus"></i></button></form>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </a>
+        }
+    </section>
+</section>

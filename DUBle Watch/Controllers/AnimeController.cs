@@ -8,30 +8,52 @@ using Microsoft.EntityFrameworkCore;
 using DUBle_Watch.Data;
 using DUBle_Watch.Models;
 using Microsoft.AspNetCore.Identity;
+using DUBle_Watch.Models.AnimeViewModels;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DUBle_Watch.Controllers
 {
     public class AnimeController : Controller
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AnimeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public AnimeController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager, 
+            IHostingEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
         }
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Anime
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Anime.Include(a => a.Genre);
-            return View(await applicationDbContext.ToListAsync());
+            
+           
+
+            var user = await GetCurrentUserAsync();
+
+           
+            if(user != null)
+            {
+
+            }
+            var userTrackedAnimeIds = _context.AnimeTracked.Include(a => a.Anime).Where(x => x.UserId == user.Id).Select(a=>a.Anime.AnimeId);
+
+            var allAnimes = _context.Anime.Include(a => a.Genre);
+
+            var availableAnimes = allAnimes.Where(a => !userTrackedAnimeIds.Contains(a.AnimeId));
+
+            return View(await availableAnimes.ToListAsync());
         }
 
-        
 
+        [HttpPost]
         public async Task<IActionResult> AddToTracked(int id)
         {
             var user = await GetCurrentUserAsync();
@@ -72,8 +94,11 @@ namespace DUBle_Watch.Controllers
         // GET: Anime/Create
         public IActionResult Create()
         {
+            UploadImageViewModel viewAnime = new UploadImageViewModel();
+            viewAnime.Anime = new Anime();
             ViewData["GenreId"] = new SelectList(_context.Genre, "GenreId", "Name");
-            return View();
+            return View(viewAnime);
+
         }
 
         // POST: Anime/Create
@@ -81,16 +106,32 @@ namespace DUBle_Watch.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AnimeId,Name,CurrentLastEpisode,GenreId,AnimeLink,Description,AnimeReleaseDate,hasAnimeEnded")] Anime anime)
+        public async Task<IActionResult> Create(UploadImageViewModel viewAnime)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(anime);
+
+                if (viewAnime.ImageFile != null)
+                {
+                    
+                    var fileName = Path.GetFileName(viewAnime.ImageFile.FileName);
+                    Path.GetTempFileName();
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await viewAnime.ImageFile.CopyToAsync(stream);
+                        // validate file, then move to CDN or public folder
+                    }
+
+                    viewAnime.Anime.ImagePath = viewAnime.ImageFile.FileName;
+                }
+                _context.Add(viewAnime.Anime);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+
             }
-            ViewData["GenreId"] = new SelectList(_context.Genre, "GenreId", "GenreId", anime.GenreId);
-            return View(anime);
+            ViewData["GenreId"] = new SelectList(_context.Genre, "GenreId", "GenreId", viewAnime.Anime.GenreId);
+            return View(viewAnime.Anime);
         }
 
         // GET: Anime/Edit/5

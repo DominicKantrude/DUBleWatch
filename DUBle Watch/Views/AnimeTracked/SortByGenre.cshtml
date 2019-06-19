@@ -8,12 +8,13 @@
 <section class="border backgroud-silver">
     <div class="flex-container anime-top-container justify-content-between">
         <div>
-            <a asp-action="SortByGenre" asp-controller="AnimeTracked" class="padding-sides-20">Genre</a> |
+            @Html.ActionLink("Genre", "SortByGenre", new { sortOrder = ViewBag.NameSortParm })
+            @*<a asp-action="SortByGenre" asp-controller="AnimeTracked" class="padding-sides-20">Genre</a>*@ |
             <a asp-action="SortByEpisodesLeft" asp-controller="AnimeTracked" class="padding-sides-20">Episodes Left</a> |
             <a asp-action="SortByReleaseDate" asp-controller="AnimeTracked" class="padding-sides-20">Release date</a>
         </div>
         <div class="flex-end">
-            @using (Html.BeginForm("SearchByCity", "Products", FormMethod.Get))
+            @using (Html.BeginForm("SearchTrackedAnime", "AnimeTracked", FormMethod.Get))
             {
                 @Html.TextBox("Search")
 
@@ -36,10 +37,7 @@
                         @Html.DisplayFor(modelItem => item.Anime.Name)
                     </div>
                     <div class="anime-card-text">
-                        @{
-                            var episodesLeft = (item.Anime.CurrentLastEpisode - item.CurrentEpisode).ToString();
-                        }
-                        Remaining Ep. @episodesLeft
+                        @Html.DisplayFor(modelItem => item.Anime.Genre.Name)
                     </div>
                     <div class="anime-card-text flex-row">
                         <div>
@@ -64,5 +62,3 @@
         }
     </section>
 </section>
-
-

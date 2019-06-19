@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace DUBle_Watch.Models
         [Required]
         public string Name { get; set; }
 
+        [DisplayName("Upload Image")]
         public string ImagePath { get; set; }
 
         public int CurrentLastEpisode { get; set; }

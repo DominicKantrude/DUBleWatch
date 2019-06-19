@@ -1,4 +1,5 @@
-﻿@model DUBle_Watch.Models.Anime
+﻿
+@model DUBle_Watch.Models.AnimeViewModels.UploadImageViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -10,45 +11,45 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Anime.Name" class="control-label"></label>
+                <input asp-for="Anime.Name" class="form-control" />
+                <span asp-validation-for="Anime.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" type="file" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CurrentLastEpisode" class="control-label"></label>
-                <input asp-for="CurrentLastEpisode" class="form-control" />
-                <span asp-validation-for="CurrentLastEpisode" class="text-danger"></span>
+                <label asp-for="Anime.CurrentLastEpisode" class="control-label"></label>
+                <input asp-for="Anime.CurrentLastEpisode" class="form-control" />
+                <span asp-validation-for="Anime.CurrentLastEpisode" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="GenreId" class="control-label"></label>
-                <select asp-for="GenreId" class ="form-control" asp-items="ViewBag.GenreId"></select>
+                <label asp-for="Anime.GenreId" class="control-label"></label>
+                <select asp-for="Anime.GenreId" class="form-control" asp-items="ViewBag.GenreId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="AnimeLink" class="control-label"></label>
-                <input asp-for="AnimeLink" class="form-control" />
-                <span asp-validation-for="AnimeLink" class="text-danger"></span>
+                <label asp-for="Anime.AnimeLink" class="control-label"></label>
+                <input asp-for="Anime.AnimeLink" class="form-control" />
+                <span asp-validation-for="Anime.AnimeLink" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="Anime.Description" class="control-label"></label>
+                <input asp-for="Anime.Description" class="form-control" />
+                <span asp-validation-for="Anime.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AnimeReleaseDate" class="control-label"></label>
-                <input asp-for="AnimeReleaseDate" class="form-control" />
-                <span asp-validation-for="AnimeReleaseDate" class="text-danger"></span>
+                <label asp-for="Anime.AnimeReleaseDate" class="control-label"></label>
+                <input asp-for="Anime.AnimeReleaseDate" class="form-control" />
+                <span asp-validation-for="Anime.AnimeReleaseDate" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="hasAnimeEnded" /> @Html.DisplayNameFor(model => model.hasAnimeEnded)
+                    <input class="form-check-input" asp-for="Anime.hasAnimeEnded" /> @Html.DisplayNameFor(model => model.Anime.hasAnimeEnded)
                 </label>
             </div>
             <div class="form-group">

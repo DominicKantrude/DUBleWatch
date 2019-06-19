@@ -1,47 +1,56 @@
-﻿@model IEnumerable<DUBle_Watch.Models.AnimeTracked>
+﻿
+
+@model IEnumerable<DUBle_Watch.Models.AnimeTracked>
 
 @{
     ViewData["Title"] = "FinishedAnimeIndex";
 }
 
-<h1>FinishedAnimeIndex</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Anime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Anime.CurrentLastEpisode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Anime.Genre)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Anime.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Anime.Genre.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AnimeTrackedId" asp->Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AnimeTrackedId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<section class="border backgroud-silver">
+    <div class="flex-container anime-top-container justify-content-between">
+        <div>
+            <a asp-action="SortByGenre" asp-controller="AnimeTracked" class="padding-sides-20">Genre</a> |
+            <a asp-action="SortByEpisodesLeft" asp-controller="AnimeTracked" class="padding-sides-20">Episodes Left</a> |
+            <a asp-action="SortByFinished" asp-controller="AnimeTracked" class="padding-sides-20">Finished</a> |
+            <a asp-action="SortByReleaseDate" asp-controller="AnimeTracked" class="padding-sides-20">Release date</a>
+        </div>
+        <div class="flex-end">
+            @using (Html.BeginForm("SearchByCity", "Products", FormMethod.Get))
+            {
+                @Html.TextBox("Search")
+
+                <input type="submit" value="Search" />
+
+            }
+        </div>
+    </div>
+
+    <section class="flex-container">
+        @foreach (var item in Model)
+        {
+            <a asp-action="Details" asp-route-id="@item.AnimeId">
+                <div class="flex-column card">
+
+                    <div class="anime-title"">
+                        <img src="/images/@item.Anime.ImagePath" class="animetDetailImage">
+                    </div>
+                    <div class="anime-card-text">
+                        @Html.DisplayFor(modelItem => item.Anime.Name)
+                    </div>
+                    <div class="anime-card-text">
+                        @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
+                    </div>
+                    <div class="anime-card-text">
+                        @Html.DisplayFor(modelItem => item.Anime.Genre.Name)
+                    </div>
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@item.AnimeTrackedId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.AnimeTrackedId">Delete</a>
+                    </div>
+                </div>
+            </a>
+        }
+    </section>
+</section>

@@ -34,11 +34,40 @@ namespace DUBle_Watch.Controllers
         }
 
         [Authorize]
+        public async Task<IActionResult> SortByGenre(string sortOrder)
+        {
+            var user = await GetCurrentUserAsync();
+
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            //ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            var applicationDbContext = _context.AnimeTracked.Where(x => x.UserId == user.Id).Include(a => a.Anime).ThenInclude(a => a.Genre);
+            var sortedTrackedAnimeByGenre = new List<AnimeTracked>();
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    sortedTrackedAnimeByGenre = applicationDbContext.OrderByDescending(a => a.Anime.Genre.Name).ToList();
+                    break;
+                
+                default:
+                    sortedTrackedAnimeByGenre = applicationDbContext.OrderBy(a => a.Anime.Genre.Name).ToList();
+                    break;
+            }
+            return View(sortedTrackedAnimeByGenre);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> SearchTrackedAnime(string Search)
+        {
+            List<AnimeTracked> animeTrackedMatched = await _context.AnimeTracked.Where(a => a.Anime.Name.Contains(Search)).Include(a => a.Anime).ThenInclude(a => a.Genre).ToListAsync();
+            return View(animeTrackedMatched);
+        }
+
+        [Authorize]
         public async Task<IActionResult> SortByEpisodesLeft()
         {
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.AnimeTracked.Include(a => a.Anime).OrderBy(a=>a.Anime.CurrentLastEpisode-a.CurrentEpisode);
+            var applicationDbContext = _context.AnimeTracked.Include(a => a.Anime).Where(x => x.UserId == user.Id).OrderBy(a=>a.Anime.CurrentLastEpisode-a.CurrentEpisode);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -47,23 +76,33 @@ namespace DUBle_Watch.Controllers
         {
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.AnimeTracked.Include(a => a.Anime).OrderBy(a => a.Anime.hasAnimeEnded);
+            var applicationDbContext = _context.AnimeTracked
+                .Include(a => a.Anime)
+                .OrderBy(a => a.Anime.hasAnimeEnded);
+
             return View(await applicationDbContext.ToListAsync());
         }
         public async Task<IActionResult> SortByReleaseDate()
         {
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.AnimeTracked.Include(a => a.Anime).OrderBy(a => a.Anime.AnimeReleaseDate);
+            var applicationDbContext = _context.AnimeTracked
+                .Include(a => a.Anime)
+                .Where(x => x.UserId == user.Id)
+                .OrderBy(a => a.Anime.AnimeReleaseDate);
+
             return View(await applicationDbContext.ToListAsync());
         }
             
-
-
-
         public async Task<IActionResult> FinishedAnimeIndex()
         {
-            var applicationDbContext = _context.AnimeTracked.Include(a => a.Anime).ThenInclude(a => a.Genre).Where(a => a.IsInCurrentlyCompletedSection == true);
+            var user = await GetCurrentUserAsync();
+
+            var applicationDbContext = _context.AnimeTracked
+                .Where(a => a.IsInCurrentlyCompletedSection == true && a.UserId == user.Id)
+                .Include(a => a.Anime)
+                .ThenInclude(a => a.Genre);
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -82,20 +121,9 @@ namespace DUBle_Watch.Controllers
             {
                 return NotFound();
             }
-
             return View(animeTracked);
         }
 
-        // GET: AnimeTrackeds/Create
-        public IActionResult Create()
-        {
-            ViewData["AnimeId"] = new SelectList(_context.Anime, "AnimeId", "Name");
-            return View();
-        }
-
-        // POST: AnimeTrackeds/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AnimeTrackedId,AnimeId,UserId,CompletedCount,CurrentlyCompleted,CurrentEpisode")] AnimeTracked animeTracked)
@@ -127,9 +155,41 @@ namespace DUBle_Watch.Controllers
             return View(animeTracked);
         }
 
-        // POST: AnimeTrackeds/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
+public async Task<IActionResult> IncrementCurrentEpisode(int id)
+        {
+            var animeTracked = await _context.AnimeTracked.FindAsync(id);
+
+            if (animeTracked == null)
+            {
+                return NotFound();
+            }
+            animeTracked.CurrentEpisode++;
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(animeTracked);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AnimeTrackedExists(animeTracked.AnimeTrackedId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return Redirect(Request.UrlReferrer.ToString());
+            }
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AnimeTrackedId,AnimeId,UserId,CompletedCount,IsInCurrentlyCompletedSection,CurrentEpisode")] AnimeTracked animeTracked)

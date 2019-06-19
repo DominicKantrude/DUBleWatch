@@ -1,19 +1,21 @@
 ﻿@model IEnumerable<DUBle_Watch.Models.AnimeTracked>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "SearchTrackedAnime";
 }
 
 
 <section class="border backgroud-silver">
     <div class="flex-container anime-top-container justify-content-between">
         <div>
-            <a asp-action="SortByGenre" asp-controller="AnimeTracked" class="padding-sides-20">Genre</a> |
+            @Html.ActionLink("Genre", "SortByGenre", new { sortOrder = ViewBag.NameSortParm })
+            @*<a asp-action="SortByGenre" asp-controller="AnimeTracked" class="padding-sides-20">Genre</a>*@ |
             <a asp-action="SortByEpisodesLeft" asp-controller="AnimeTracked" class="padding-sides-20">Episodes Left</a> |
+            <a asp-action="SortByFinished" asp-controller="AnimeTracked" class="padding-sides-20">Finished</a> |
             <a asp-action="SortByReleaseDate" asp-controller="AnimeTracked" class="padding-sides-20">Release date</a>
         </div>
         <div class="flex-end">
-            @using (Html.BeginForm("SearchByCity", "Products", FormMethod.Get))
+            @using (Html.BeginForm("SearchTrackedAnime", "AnimeTracked", FormMethod.Get))
             {
                 @Html.TextBox("Search")
 
@@ -26,7 +28,7 @@
     <section class="flex-container">
         @foreach (var item in Model)
         {
-            <a asp-action="Details" asp-route-id="@item.AnimeId">
+            <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">
                 <div class="flex-column card">
 
                     <div>
@@ -36,22 +38,12 @@
                         @Html.DisplayFor(modelItem => item.Anime.Name)
                     </div>
                     <div class="anime-card-text">
-                        @{
-                            var episodesLeft = (item.Anime.CurrentLastEpisode - item.CurrentEpisode).ToString();
-                        }
-                        Remaining Ep. @episodesLeft
-                    </div>
-                    <div class="anime-card-text flex-row">
-                        <div>
-                            Current EP.
-                            @Html.DisplayFor(modelItem => item.CurrentEpisode)
-                        </div>
-                        <div>
-                            <form asp-action="IncrementCurrentEpisode" asp-route-id="@item.AnimeTrackedId"><button type="submit" class="btn iconButton"><i class="fas fa-arrow-circle-right"></i></button></form>
-                        </div>
+                        @Html.DisplayFor(modelItem => item.TimesCompleted)
                     </div>
                     <div class="anime-card-text">
-                        Last Ep.
+                        @Html.DisplayFor(modelItem => item.CurrentEpisode)
+                    </div>
+                    <div class="anime-card-text">
                         @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
                     </div>
                     <div>

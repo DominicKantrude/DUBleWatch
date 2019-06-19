@@ -29,7 +29,7 @@ namespace DUBle_Watch.Controllers
         {
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.AnimeTracked.Include(a => a.Anime).Where(x => x.UserId  == user.Id);
+            var applicationDbContext = _context.AnimeTracked.Where(x => x.UserId == user.Id).Include(a => a.Anime).ThenInclude(a=>a.Genre);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -38,8 +38,7 @@ namespace DUBle_Watch.Controllers
         {
             var user = await GetCurrentUserAsync();
 
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            //ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.GenreSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             var applicationDbContext = _context.AnimeTracked.Where(x => x.UserId == user.Id).Include(a => a.Anime).ThenInclude(a => a.Genre);
             var sortedTrackedAnimeByGenre = new List<AnimeTracked>();
             switch (sortOrder)
@@ -63,12 +62,24 @@ namespace DUBle_Watch.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> SortByEpisodesLeft()
+        public async Task<IActionResult> SortByEpisodesLeft(string sortOrder)
         {
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.AnimeTracked.Include(a => a.Anime).Where(x => x.UserId == user.Id).OrderBy(a=>a.Anime.CurrentLastEpisode-a.CurrentEpisode);
-            return View(await applicationDbContext.ToListAsync());
+            ViewBag.EpisodesLeftSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            var applicationDbContext = _context.AnimeTracked.Where(x => x.UserId == user.Id).Include(a => a.Anime);
+            var sortedTrackedAnimeByGenre = new List<AnimeTracked>();
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    sortedTrackedAnimeByGenre = applicationDbContext.OrderByDescending(a => a.Anime.CurrentLastEpisode - a.CurrentEpisode).ToList();
+                    break;
+                default:
+                    sortedTrackedAnimeByGenre = applicationDbContext.OrderBy(a => a.Anime.CurrentLastEpisode - a.CurrentEpisode).ToList();
+                    break;
+            }
+            return View(sortedTrackedAnimeByGenre);
         }
 
         [Authorize]
@@ -82,16 +93,24 @@ namespace DUBle_Watch.Controllers
 
             return View(await applicationDbContext.ToListAsync());
         }
-        public async Task<IActionResult> SortByReleaseDate()
+        public async Task<IActionResult> SortByReleaseDate(string sortOrder)
         {
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.AnimeTracked
-                .Include(a => a.Anime)
-                .Where(x => x.UserId == user.Id)
-                .OrderBy(a => a.Anime.AnimeReleaseDate);
+            ViewBag.ReleaseDateSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            var applicationDbContext = _context.AnimeTracked.Where(x => x.UserId == user.Id).Include(a => a.Anime);
+            var sortedTrackedAnimeByGenre = new List<AnimeTracked>();
 
-            return View(await applicationDbContext.ToListAsync());
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    sortedTrackedAnimeByGenre = applicationDbContext.OrderByDescending(a => a.Anime.AnimeReleaseDate).ToList();
+                    break;
+                default:
+                    sortedTrackedAnimeByGenre = applicationDbContext.OrderBy(a => a.Anime.AnimeReleaseDate).ToList();
+                    break;
+            }
+            return View(sortedTrackedAnimeByGenre);
         }
             
         public async Task<IActionResult> FinishedAnimeIndex()
@@ -99,14 +118,14 @@ namespace DUBle_Watch.Controllers
             var user = await GetCurrentUserAsync();
 
             var applicationDbContext = _context.AnimeTracked
-                .Where(a => a.IsInCurrentlyCompletedSection == true && a.UserId == user.Id)
+                .Include(a => a.Anime)
+                .Where(a => a.Anime.hasAnimeEnded == true && a.UserId == user.Id && a.CurrentEpisode == a.Anime.CurrentLastEpisode)
                 .Include(a => a.Anime)
                 .ThenInclude(a => a.Genre);
 
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: AnimeTrackeds/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -138,7 +157,6 @@ namespace DUBle_Watch.Controllers
             return View(animeTracked);
         }
 
-        // GET: AnimeTrackeds/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -155,16 +173,19 @@ namespace DUBle_Watch.Controllers
             return View(animeTracked);
         }
 
-       
+
 public async Task<IActionResult> IncrementCurrentEpisode(int id)
         {
             var animeTracked = await _context.AnimeTracked.FindAsync(id);
+            string referer = Request.Headers["Referer"].ToString();
 
             if (animeTracked == null)
             {
                 return NotFound();
             }
             animeTracked.CurrentEpisode++;
+
+            
 
             if (ModelState.IsValid)
             {
@@ -184,9 +205,12 @@ public async Task<IActionResult> IncrementCurrentEpisode(int id)
                         throw;
                     }
                 }
-                return Redirect(Request.UrlReferrer.ToString());
+                
+                return Redirect(referer);
+               // return RedirectToAction(nameof(Index));
             }
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(referer);
+           // return RedirectToAction(nameof(Index));
         }
 
 

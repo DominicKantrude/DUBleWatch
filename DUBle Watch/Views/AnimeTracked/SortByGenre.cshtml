@@ -6,12 +6,11 @@
 
 
 <section class="border backgroud-silver">
-    <div class="flex-container anime-top-container justify-content-between">
+    <div class="flex-coontainer-space-between anime-top-container justify-content-between">
         <div>
-            @Html.ActionLink("Genre", "SortByGenre", new { sortOrder = ViewBag.NameSortParm })
-            @*<a asp-action="SortByGenre" asp-controller="AnimeTracked" class="padding-sides-20">Genre</a>*@ |
-            <a asp-action="SortByEpisodesLeft" asp-controller="AnimeTracked" class="padding-sides-20">Episodes Left</a> |
-            <a asp-action="SortByReleaseDate" asp-controller="AnimeTracked" class="padding-sides-20">Release date</a>
+            @Html.ActionLink("Genre", "SortByGenre", new { sortOrder = ViewBag.GenreSortParm }, new { @class = "padding-sides-20" }) |
+            @Html.ActionLink("Episodes Left", "SortByEpisodesLeft", new { sortOrder = ViewBag.EpisodesLeftSortParm }, new { @class = "padding-sides-20" }) |
+            @Html.ActionLink("Release Date", "SortByReleaseDate", new { sortOrder = ViewBag.ReleaseDateSortParm }, new { @class = "padding-sides-20" })
         </div>
         <div class="flex-end">
             @using (Html.BeginForm("SearchTrackedAnime", "AnimeTracked", FormMethod.Get))

@@ -1,65 +1,69 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
-a{
+a {
     color: inherit;
     text-decoration: none;
 }
 
-a:hover{
-    text-decoration: none;
-}
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
+    a:hover {
+        text-decoration: none;
+    }
+
+    a.navbar-brand {
+        white-space: normal;
+        text-align: center;
+        word-break: break-all;
+    }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
 }
 
 .animetDetailImage {
@@ -96,15 +100,15 @@ body {
     text-overflow: ellipsis;
 }
 
-.plus-sign{
+.plus-sign {
     position: relative;
 }
 
-    .card:hover {
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    }
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
 
-.flex-column{
+.flex-column {
     flex-direction: column;
 }
 
@@ -129,12 +133,11 @@ anime-card-text {
     font-size: 12px;
 }
 
-.flex-end{
+.flex-end {
     align-self: flex-end;
 }
 
 .anime-top-container {
-    
     padding: 10px 50px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
@@ -147,17 +150,15 @@ anime-card-text {
     background-color: #f0f0f5;
 }
 
-.padding-sides-20{
+.padding-sides-20 {
     padding: 0px 20px;
 }
 
-.iconButton{
+.iconButton {
     padding: 0;
     margin: 0 0 0 20px;
-
 }
 
-.flex-row{
-    display:flex;
+.flex-row {
+    display: flex;
 }
-

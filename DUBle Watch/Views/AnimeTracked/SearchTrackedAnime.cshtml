@@ -5,56 +5,54 @@
 }
 
 
-<section class="border backgroud-silver">
-    <div class="flex-container anime-top-container justify-content-between">
-        <div>
-            @Html.ActionLink("Genre", "SortByGenre", new { sortOrder = ViewBag.NameSortParm })
-            @*<a asp-action="SortByGenre" asp-controller="AnimeTracked" class="padding-sides-20">Genre</a>*@ |
-            <a asp-action="SortByEpisodesLeft" asp-controller="AnimeTracked" class="padding-sides-20">Episodes Left</a> |
-            <a asp-action="SortByFinished" asp-controller="AnimeTracked" class="padding-sides-20">Finished</a> |
-            <a asp-action="SortByReleaseDate" asp-controller="AnimeTracked" class="padding-sides-20">Release date</a>
+    <section class="border backgroud-silver">
+        <div class="flex-container anime-top-container justify-content-between">
+            <div>
+                @Html.ActionLink("Genre", "SortByGenre", new { sortOrder = ViewBag.GenreSortParm }) |
+                @Html.ActionLink("Episodes Left", "SortByEpisodesLeft", new { sortOrder = ViewBag.EpisodesLeftSortParm }) |
+                @Html.ActionLink("Release Date", "SortByReleaseDate", new { sortOrder = ViewBag.ReleaseDateSortParm })
+            </div>
+            <div class="flex-end">
+                @using (Html.BeginForm("SearchTrackedAnime", "AnimeTracked", FormMethod.Get))
+                {
+                    @Html.TextBox("Search")
+
+                    <input type="submit" value="Search" />
+
+                }
+            </div>
         </div>
-        <div class="flex-end">
-            @using (Html.BeginForm("SearchTrackedAnime", "AnimeTracked", FormMethod.Get))
+
+        <section class="flex-container">
+            @foreach (var item in Model)
             {
-                @Html.TextBox("Search")
+                <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">
+                    <div class="flex-column card">
 
-                <input type="submit" value="Search" />
-
+                        <div>
+                            <img src="/images/@item.Anime.ImagePath" class="animetDetailImage">
+                        </div>
+                        <div class="anime-title">
+                            @Html.DisplayFor(modelItem => item.Anime.Name)
+                        </div>
+                        <div class="anime-card-text">
+                            @Html.DisplayFor(modelItem => item.TimesCompleted)
+                        </div>
+                        <div class="anime-card-text">
+                            @Html.DisplayFor(modelItem => item.CurrentEpisode)
+                        </div>
+                        <div class="anime-card-text">
+                            @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
+                        </div>
+                        <div>
+                            <a asp-action="Edit" asp-route-id="@item.AnimeTrackedId">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.AnimeTrackedId">Delete</a>
+                        </div>
+                    </div>
+                </a>
             }
-        </div>
-    </div>
-
-    <section class="flex-container">
-        @foreach (var item in Model)
-        {
-            <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">
-                <div class="flex-column card">
-
-                    <div>
-                        <img src="/images/@item.Anime.ImagePath" class="animetDetailImage">
-                    </div>
-                    <div class="anime-title">
-                        @Html.DisplayFor(modelItem => item.Anime.Name)
-                    </div>
-                    <div class="anime-card-text">
-                        @Html.DisplayFor(modelItem => item.TimesCompleted)
-                    </div>
-                    <div class="anime-card-text">
-                        @Html.DisplayFor(modelItem => item.CurrentEpisode)
-                    </div>
-                    <div class="anime-card-text">
-                        @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
-                    </div>
-                    <div>
-                        <a asp-action="Edit" asp-route-id="@item.AnimeTrackedId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.AnimeTrackedId">Delete</a>
-                    </div>
-                </div>
-            </a>
-        }
+        </section>
     </section>
-</section>
 
 

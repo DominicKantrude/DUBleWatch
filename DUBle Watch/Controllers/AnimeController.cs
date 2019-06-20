@@ -33,12 +33,8 @@ namespace DUBle_Watch.Controllers
         // GET: Anime
         public async Task<IActionResult> Index()
         {
-            
-           
-
             var user = await GetCurrentUserAsync();
 
-           
             if(user != null)
             {
 
@@ -134,7 +130,45 @@ namespace DUBle_Watch.Controllers
             return View(viewAnime.Anime);
         }
 
-        // GET: Anime/Edit/5
+        public async Task<IActionResult> SortByGenre(string sortOrder)
+        {
+            var user = await GetCurrentUserAsync();
+
+            ViewBag.GenreSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            var userTrackedAnimeIds = _context.AnimeTracked.Include(a => a.Anime).Where(x => x.UserId == user.Id).Select(a => a.Anime.AnimeId);
+
+            var allAnimes = _context.Anime.Include(a => a.Genre);
+
+            var availableAnimes = allAnimes.Where(a => !userTrackedAnimeIds.Contains(a.AnimeId));
+
+            var sortedTrackedAnimeByGenre = new List<Anime>();
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    sortedTrackedAnimeByGenre = availableAnimes.OrderByDescending(a => a.Genre.Name).ToList();
+                    break;
+                default:
+                    sortedTrackedAnimeByGenre = availableAnimes.OrderBy(a => a.Genre.Name).ToList();
+                    break;
+            }
+            return View(sortedTrackedAnimeByGenre);
+        }
+
+        public async Task<IActionResult> SortByRecentlyAdded()
+        {
+            var user = await GetCurrentUserAsync();
+
+            var userTrackedAnimeIds = _context.AnimeTracked.Include(a => a.Anime).Where(x => x.UserId == user.Id).Select(a => a.Anime.AnimeId);
+
+            var allAnimes = _context.Anime.Include(a => a.Genre);
+
+            var availableAnimes = allAnimes.Where(a => !userTrackedAnimeIds.Contains(a.AnimeId)).OrderByDescending(a => a.DateCreated);
+
+            return View(await availableAnimes.ToListAsync());
+        }
+
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

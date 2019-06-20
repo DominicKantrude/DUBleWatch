@@ -1,31 +1,31 @@
 ﻿@model IEnumerable<DUBle_Watch.Models.Anime>
 
-@{
+    @{
     ViewData["Title"] = "Index";
-}
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
 
-<section class="border backgroud-silver">
-    <div class="flex-coontainer-space-between anime-top-container justify-content-between">
-        <div>
-            @Html.ActionLink("Genre", "SortByGenre", new { sortOrder = ViewBag.GenreSortParm }, new { @class = "padding-sides-20" }) |
-            @Html.ActionLink("Recently Added", "SortByRecentlyAdded", new { sortOrder = ViewBag.ReleaseDateSortParm }, new { @class = "padding-sides-20" })
-        </div>
-        <div class="flex-end">
-            @using (Html.BeginForm("SearchAnime", "Anime", FormMethod.Get))
+    <section class="border backgroud-silver">
+        <div class="flex-coontainer-space-between anime-top-container justify-content-between">
+            <div>
+                @Html.ActionLink("Genre", "SortByGenre", new { sortOrder = ViewBag.GenreSortParm }, new { @class = "padding-sides-20" }) |
+                @Html.ActionLink("Recently Added", "SortByRecentlyAdded", new { sortOrder = ViewBag.ReleaseDateSortParm }, new { @class = "padding-sides-20" })
+            </div>
+            <div class="flex-end">
+                @using (Html.BeginForm("SearchAnime", "Anime", FormMethod.Get))
             {
                 @Html.TextBox("Search")
                 <input type="submit" value="Search" />
             }
+            </div>
         </div>
-    </div>
 
-    <section class="flex-container">
-        @foreach (var item in Model)
-        {
+        <section class="flex-container">
+            @foreach (var item in Model)
+            {
             <a asp-action="Details" asp-route-id="@item.AnimeId">
                 <div class="flex-column card">
                     <div class="innerCardContents">
@@ -37,7 +37,8 @@
                             @Html.DisplayFor(modelItem => item.Name)
                         </div>
                         <div class="anime-card-text">
-                            @Html.DisplayFor(modelItem => item.Genre.Name)
+                            Added:
+                            @Html.DisplayFor(modelItem => item.DateCreated)
                         </div>
                         <div class="anime-card-text">
                             Episodes:
@@ -49,6 +50,6 @@
                     </div>
                 </div>
             </a>
-        }
+            }
+        </section>
     </section>
-</section>

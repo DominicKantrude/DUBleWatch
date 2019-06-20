@@ -4,6 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
+
 <section class="border backgroud-silver">
     <div class="flex-coontainer-space-between anime-top-container justify-content-between">
         <div>
@@ -27,38 +28,32 @@
         {
             <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">
                 <div class="flex-column card">
-
-                    <div>
-                        <img src="/images/@item.Anime.ImagePath" class="animetDetailImage">
-                    </div>
-                    <div class="anime-title">
-                        @Html.DisplayFor(modelItem => item.Anime.Name)
-                    </div>
-                    <div class="anime-card-text">
-                        yo
-                        @Html.DisplayFor(modelItem => item.Anime.Genre.Name)
-                    </div>
-                    <div class="anime-card-text flex-row">
+                    <div class="innerCardContents">
                         <div>
-                            Current EP.
-                            @Html.DisplayFor(modelItem => item.CurrentEpisode)
+                            <img src="/images/@item.Anime.ImagePath" class="animetDetailImage">
                         </div>
-                        <div>
-                            <form asp-action="IncrementCurrentEpisode" asp-route-id="@item.AnimeTrackedId"><button type="submit" class="btn iconButton"><i class="fas fa-arrow-circle-right"></i></button></form>
+                        <div class="anime-title">
+                            @Html.DisplayFor(modelItem => item.Anime.Name)
                         </div>
-                    </div>
-                    <div class="anime-card-text">
-                        Last Ep.
-                        @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
-                    </div>
-                    <div>
-                        <a asp-action="Edit" asp-route-id="@item.AnimeTrackedId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.AnimeTrackedId">Delete</a>
+                        <div class="anime-card-text">
+                            @Html.DisplayFor(modelItem => item.Anime.Genre.Name)
+                        </div>
+                        <div class="anime-card-text flex-row">
+                            <div>
+                                Current EP.
+                                @Html.DisplayFor(modelItem => item.CurrentEpisode)
+                            </div>
+                            <div>
+                                <form asp-action="IncrementCurrentEpisode" asp-route-id="@item.AnimeTrackedId"><button type="submit" class="btn iconButton"><i class="fas fa-arrow-circle-right"></i></button></form>
+                            </div>
+                        </div>
+                        <div class="anime-card-text">
+                            Last Ep.
+                            @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
+                        </div>
                     </div>
                 </div>
             </a>
         }
     </section>
 </section>
-

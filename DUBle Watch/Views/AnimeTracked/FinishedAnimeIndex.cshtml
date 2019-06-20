@@ -9,12 +9,6 @@
 
 <section class="border backgroud-silver">
     <div class="flex-container anime-top-container justify-content-between">
-        <div>
-            <a asp-action="SortByGenre" asp-controller="AnimeTracked" class="padding-sides-20">Genre</a> |
-            <a asp-action="SortByEpisodesLeft" asp-controller="AnimeTracked" class="padding-sides-20">Episodes Left</a> |
-            <a asp-action="SortByFinished" asp-controller="AnimeTracked" class="padding-sides-20">Finished</a> |
-            <a asp-action="SortByReleaseDate" asp-controller="AnimeTracked" class="padding-sides-20">Release date</a>
-        </div>
         <div class="flex-end">
             @using (Html.BeginForm("SearchByCity", "Products", FormMethod.Get))
             {
@@ -43,11 +37,6 @@
                     </div>
                     <div class="anime-card-text">
                         @Html.DisplayFor(modelItem => item.Anime.Genre.Name)
-                    </div>
-                    <div>
-                        <a asp-action="Edit" asp-route-id="@item.AnimeTrackedId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.AnimeTrackedId">Delete</a>
                     </div>
                 </div>
             </a>

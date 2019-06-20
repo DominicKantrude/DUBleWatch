@@ -26,9 +26,9 @@
         <section class="flex-container">
             @foreach (var item in Model)
             {
-                <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">
-                    <div class="flex-column card">
-
+            <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">
+                <div class="flex-column card">
+                    <div class="innerCardContents">
                         <div>
                             <img src="/images/@item.Anime.ImagePath" class="animetDetailImage">
                         </div>
@@ -44,13 +44,9 @@
                         <div class="anime-card-text">
                             @Html.DisplayFor(modelItem => item.Anime.CurrentLastEpisode)
                         </div>
-                        <div>
-                            <a asp-action="Edit" asp-route-id="@item.AnimeTrackedId">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.AnimeTrackedId">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.AnimeTrackedId">Delete</a>
-                        </div>
                     </div>
-                </a>
+                </div>
+            </a>
             }
         </section>
     </section>
